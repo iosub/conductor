@@ -77,6 +77,9 @@ Within a class, enum, interface, or struct:
 - **this:** Do not use `this.` unless required for disambiguation.
 - **Ordering Modifiers:** Use standard order: `public protected private internal static extern new virtual abstract sealed override readonly unsafe volatile async`.
 - **Namespace Imports:** Place `using` directives at the top of the file (outside namespaces); `System` first, then alphabetical.
+- **Constants:** Always make variables `const` when possible; if not, use `readonly`. Prefer named constants over magic numbers.
+- **Array vs List:** Prefer `List<>` for public variables, properties, and return types. Use arrays when size is fixed and known at construction time, or for multidimensional arrays.
+- **Extension Methods:** Only use when the source is unavailable or changing it is infeasible. Only for core, general features. Be aware they obfuscate code.
 - **LINQ:** Use LINQ for readability, but be mindful of performance in hot paths.
 - **String Comparison:** Use `StringComparison` parameter for string comparisons.
   ```csharp
@@ -106,6 +109,15 @@ Within a class, enum, interface, or struct:
 
 ## 9. Parameters and Returns
 - **out Parameters:** Permitted for output-only values; place `out` parameters after all other parameters. Prefer tuples or return types when they improve clarity.
+- **Argument Clarity:** When argument meaning is nonobvious, use named constants, replace `bool` with `enum`, use named arguments, or create a configuration class/struct.
+  ```csharp
+  // Bad
+  DecimalNumber product = CalculateProduct(values, 7, false, null);
+  
+  // Good
+  var options = new ProductOptions { PrecisionDecimals = 7, UseCache = CacheUsage.DontUseCache };
+  DecimalNumber product = CalculateProduct(values, options, completionDelegate: null);
+  ```
 
 ## 10. Modern C# Features
 - **Nullable Reference Types:** Enable and use nullable reference types (`#nullable enable`).
